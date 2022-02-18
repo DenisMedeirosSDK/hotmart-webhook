@@ -1,5 +1,4 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { withSentry } from '@sentry/nextjs';
 import { apiBackend } from '../../../services/api';
 
 type WebhookHotmart = {
@@ -33,7 +32,10 @@ type WebhookHotmart = {
   version: string;
 };
 
-export async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
   if (req.method === 'POST') {
     const webhook: WebhookHotmart = req.body;
 
@@ -52,5 +54,3 @@ export async function handler(req: NextApiRequest, res: NextApiResponse) {
     res.status(405).end('Method not allowed');
   }
 }
-
-export default withSentry(handler);
