@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { apiBackend } from '../../../services/api';
-import Cors from 'cors';
+// import { apiBackend } from '../../../services/api';
+// import Cors from 'cors';
 
 type WebhookHotmart = {
   data: {
@@ -33,44 +33,40 @@ type WebhookHotmart = {
   version: string;
 };
 
-const cors = Cors({
-  methods: ['POST'],
-});
+// const cors = Cors({
+//   methods: ['POST'],
+// });
 
-function runMiddleware(req, res, fn) {
-  return new Promise((resolve, reject) => {
-    fn(req, res, result => {
-      if (result instanceof Error) {
-        return reject(result);
-      }
+// function runMiddleware(req, res, fn) {
+//   return new Promise((resolve, reject) => {
+//     fn(req, res, result => {
+//       if (result instanceof Error) {
+//         return reject(result);
+//       }
 
-      return resolve(result);
-    });
-  });
-}
+//       return resolve(result);
+//     });
+//   });
+// }
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
   if (req.method === 'POST') {
-    await runMiddleware(req, res, cors);
-    try {
-      const webhook: WebhookHotmart = req.body;
-      console.log(JSON.stringify(webhook));
+    // await runMiddleware(req, res, cors);
+    const webhook: WebhookHotmart = req.body;
+    console.log(JSON.stringify(webhook));
 
-      const { data } = webhook as WebhookHotmart;
+    // const { data } = webhook as WebhookHotmart;
 
-      apiBackend
-        .post('/purchase', {
-          product: data.product.name,
-          transaction: data.purchase.transaction,
-          status: data.purchase.status,
-          email: data.buyer.email,
-        })
-        .then(response => console.log(response));
-    } catch (error) {
-      console.log(error);
-    }
+    // apiBackend
+    //   .post('/purchase', {
+    //     product: data.product.name,
+    //     transaction: data.purchase.transaction,
+    //     status: data.purchase.status,
+    //     email: data.buyer.email,
+    //   })
+    //   .then(response => console.log(response));
   } else {
     res.setHeader('Allow', 'POST');
     res.status(405).end('Method not allowed');
