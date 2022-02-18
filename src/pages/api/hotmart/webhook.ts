@@ -32,16 +32,28 @@ type WebhookHotmart = {
   version: string;
 };
 
-export default async (req: NextApiRequest, res: NextApiResponse) => {
-  const webhook: WebhookHotmart = req.body;
-  console.log(JSON.stringify(webhook));
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
+  if (req.method === 'POST') {
+    try {
+      const webhook: WebhookHotmart = req.body;
+      console.log(JSON.stringify(webhook));
 
-  const { data } = webhook as WebhookHotmart;
+      const { data } = webhook as WebhookHotmart;
 
-  await apiBackend.post('/purchase', {
-    product: data.product.name,
-    transaction: data.purchase.transaction,
-    status: data.purchase.status,
-    email: data.buyer.email,
-  });
-};
+      apiBackend.post('/purchase', {
+        product: data.product.name,
+        transaction: data.purchase.transaction,
+        status: data.purchase.status,
+        email: data.buyer.email,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  } else {
+    res.setHeader('Allow', 'POST');
+    res.status(405).end('Method not allowed');
+  }
+}
